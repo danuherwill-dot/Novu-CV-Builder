@@ -1,4 +1,4 @@
-import { forwardRef } from 'react'
+import { forwardRef, memo } from 'react'
 import { useT } from '../i18n'
 import { fmtRange, lines, levelLabel, cleanUrl } from '../format'
 import { CV, Experience, Education, PHOTO_TEMPLATES } from '../types'
@@ -39,7 +39,7 @@ function eduTitle(e: Education) {
   return [e.degree, e.field].filter(Boolean).join(' — ')
 }
 
-export const CVDocument = forwardRef<HTMLDivElement, { cv: CV }>(function CVDocument({ cv }, ref) {
+export const CVDocument = memo(forwardRef<HTMLDivElement, { cv: CV }>(function CVDocument({ cv }, ref) {
   const t = useT()
   const s = cv.settings
   const p = cv.personal
@@ -277,4 +277,4 @@ export const CVDocument = forwardRef<HTMLDivElement, { cv: CV }>(function CVDocu
       {body}
     </div>
   )
-})
+}))

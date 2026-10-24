@@ -8,6 +8,7 @@ import { Preview } from './components/Preview'
 import { TipsCard } from './components/TipsCard'
 import { Logo } from './components/ui'
 import { downloadPdf } from './exportPdf'
+import { paginate, resetPagination } from './paginate'
 import { ImportModal } from './components/ImportModal'
 import type { ImportResult } from './importCV'
 import { EducationStep, ExperienceStep, ExtrasStep, FinishStep, LanguagesStep, PersonalStep, SkillsStep, SummaryStep } from './components/Steps'
@@ -37,7 +38,16 @@ export default function App() {
   const printPdf = () => {
     const prev = document.title
     document.title = `${fileBase()}_CV`
-    const restore = () => { document.title = prev; window.removeEventListener('afterprint', restore) }
+    const root = document.getElementById('print-root')
+    const el = root?.querySelector<HTMLElement>('.cv')
+    if (root && el) {
+      // lay the print copy out off-screen so entries can be kept together across pages
+      const prevStyle = root.getAttribute('style')
+      root.style.cssText = 'display:block;position:fixed;left:-10000px;top:0;width:210mm;'
+      paginate(el)
+      if (prevStyle === null) root.removeAttribute('style'); else root.setAttribute('style', prevStyle)
+    }
+    const restore = () => { document.title = prev; if (el) resetPagination(el); window.removeEventListener('afterprint', restore) }
     window.addEventListener('afterprint', restore)
     window.print()
   }

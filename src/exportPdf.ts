@@ -1,3 +1,5 @@
+import { paginate, resetPagination } from './paginate'
+
 /**
  * Direct PDF download, generated in the browser (no print dialog, works on phones).
  * The page is rendered at high resolution and an invisible text layer is added on top,
@@ -12,6 +14,7 @@ export async function downloadPdf(fileName: string, title: string): Promise<void
   try {
     const [{ default: html2canvas }, { jsPDF }] = await Promise.all([import('html2canvas'), import('jspdf')])
     await new Promise(r => requestAnimationFrame(() => r(null)))
+    paginate(el)
     const W = el.offsetWidth
     const H = el.offsetHeight
     const scale = H / W > 1.6 ? 2.2 : 3 // stay under mobile canvas size limits on 2-page CVs
@@ -58,6 +61,7 @@ export async function downloadPdf(fileName: string, title: string): Promise<void
     }
     pdf.save(fileName)
   } finally {
+    resetPagination(el)
     if (previous === null) root.removeAttribute('style')
     else root.setAttribute('style', previous)
   }

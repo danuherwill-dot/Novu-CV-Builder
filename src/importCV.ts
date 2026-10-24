@@ -207,7 +207,14 @@ function parseExperience(lines: string[], baseKind: ExperienceKind): Experience[
       if (!l) continue
       if (!org && !isBullet(raw) && l.length < 70 && !bullets.length) org = l
       else if (!bullets.length && !isBullet(raw) && l.length < 30 && /^[A-ZÀ-Ú]/.test(l) && !/[.:;]$/.test(l)) org += ' ' + l // wrapped header
+      else if (bullets.length && !isBullet(raw) && /^[a-zà-ú(,;]/.test(l)) bullets[bullets.length - 1] += ' ' + l // wrapped bullet
       else bullets.push(l)
+    }
+    // a short title-like line left after the bullets is the job title ("Consultor de Vendas")
+    const last = bullets[bullets.length - 1]
+    if (!org && bullets.length > 1 && last && last.split(/\s+/).length <= 7 && /^[A-ZÀ-Ú]/.test(last) && !/[.:;,]$/.test(last) && /[.!?]$/.test(bullets[bullets.length - 2])) {
+      org = title
+      title = bullets.pop()!
     }
     const hint = `${title} ${org}`
     if (kind === 'job') {

@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { CVDocument } from './CVDocument'
+import { paginate } from '../paginate'
 import type { CV } from '../types'
 
 const PAGE_MM = 297
@@ -33,6 +34,14 @@ export function Preview({ cv, onFit }: { cv: CV; onFit: (fits: boolean) => void 
     ro.observe(el)
     return () => ro.disconnect()
   }, [onFit])
+
+  useLayoutEffect(() => {
+    const el = doc.current
+    if (!el) return
+    paginate(el)
+    setH(el.offsetHeight)
+    onFit(el.offsetHeight <= PAGE_MM * PX_PER_MM + 2)
+  }, [cv, onFit])
 
   const pages = Math.max(1, Math.ceil((h - 2) / (PAGE_MM * PX_PER_MM)))
   const printRoot = document.getElementById('print-root')
