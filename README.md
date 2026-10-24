@@ -14,6 +14,8 @@ A free, private CV builder for students and first-time job seekers. No accounts,
 ![Privacy first](https://img.shields.io/badge/privacy-first-2563eb?labelColor=0f1630)
 ![Language](https://img.shields.io/badge/UI-pt--PT-2563eb?labelColor=0f1630)
 
+**[🚀 Try it live: novu-cv.netlify.app](https://novu-cv.netlify.app)**
+
 [Features](#-features) · [Screenshots](#-screenshots) · [Quick start](#-quick-start) · [Deploy](#-deploy) · [How it works](#-how-it-works) · [Roadmap](#-roadmap)
 
 <br />
