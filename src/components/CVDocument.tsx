@@ -2,6 +2,7 @@ import { forwardRef } from 'react'
 import { useT } from '../i18n'
 import { fmtRange, lines, levelLabel, cleanUrl } from '../format'
 import { CV, Experience, Education, PHOTO_TEMPLATES } from '../types'
+import { accentVars } from '../accentVars'
 import '../cv.css'
 
 function Contacts({ cv, className }: { cv: CV; className?: string }) {
@@ -82,7 +83,7 @@ export const CVDocument = forwardRef<HTMLDivElement, { cv: CV }>(function CVDocu
     show ? <section className="cv-section"><h2>{title}</h2>{children}</section> : null
 
   const cls = `cv cv-${s.template}${s.compact ? ' compact' : ''}`
-  const style = { ['--acc' as string]: s.accent } as React.CSSProperties
+  const style = accentVars(s.accent) as React.CSSProperties
 
   let body: React.ReactNode
   if (s.template === 'moderno') {

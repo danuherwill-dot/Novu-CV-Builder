@@ -7,6 +7,7 @@ import { Home } from './components/Home'
 import { Preview } from './components/Preview'
 import { TipsCard } from './components/TipsCard'
 import { Logo } from './components/ui'
+import { downloadPdf } from './exportPdf'
 import { ImportModal } from './components/ImportModal'
 import type { ImportResult } from './importCV'
 import { EducationStep, ExperienceStep, ExtrasStep, FinishStep, LanguagesStep, PersonalStep, SkillsStep, SummaryStep } from './components/Steps'
@@ -22,6 +23,7 @@ export default function App() {
   const [tab, setTab] = useState<'edit' | 'preview'>('edit')
   const [fits, setFits] = useState(true)
   const [guide, setGuide] = useState(false)
+  const [busy, setBusy] = useState(false)
   const [importing, setImporting] = useState(false)
   const [note, setNote] = useState<ImportResult['found'] | null>(null)
   const onFit = useCallback((f: boolean) => setFits(f), [])
@@ -30,13 +32,25 @@ export default function App() {
   const stepId = t.steps[step].id
   const stepChecks = checks.filter(c => (STEP_CHECKS[stepId] ?? []).includes(c.id))
 
-  const exportPdf = () => {
+  const fileBase = () => (cv.personal.fullName || 'CV').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^A-Za-z0-9]+/g, '')
+
+  const printPdf = () => {
     const prev = document.title
-    const base = (cv.personal.fullName || 'CV').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^A-Za-z0-9]+/g, '')
-    document.title = `${base}_CV`
+    document.title = `${fileBase()}_CV`
     const restore = () => { document.title = prev; window.removeEventListener('afterprint', restore) }
     window.addEventListener('afterprint', restore)
     window.print()
+  }
+
+  const exportPdf = async () => {
+    if (busy) return
+    setBusy(true)
+    try {
+      await downloadPdf(`${fileBase()}_CV.pdf`, `${cv.personal.fullName || 'CV'} - CV`)
+    } catch {
+      alert(t.finish.pdfError)
+      printPdf()
+    } finally { setBusy(false) }
   }
 
   const backup = () => {
@@ -73,7 +87,7 @@ export default function App() {
     case 'skills': body = <SkillsStep {...props} />; break
     case 'languages': body = <LanguagesStep {...props} />; break
     case 'extras': body = <ExtrasStep {...props} />; break
-    default: body = <FinishStep {...props} checks={checks} fits={fits} onExport={exportPdf} onBackup={backup} />
+    default: body = <FinishStep {...props} checks={checks} fits={fits} onExport={exportPdf} onPrint={printPdf} busy={busy} onBackup={backup} />
   }
   const tip = (t.tips as Record<string, TipBlock>)[stepId]
 
@@ -91,7 +105,7 @@ export default function App() {
               <input className="draft-name" aria-label={t.header.draftName} value={cv.name} onChange={e => update(c => ({ ...c, name: e.target.value }))} />
               <span className={`saved ${d.saved}`} title={d.saved === 'saved' ? t.header.saved : t.header.saveError}>{d.saved === 'saved' ? '✓' : '!'}<em>{d.saved === 'saved' ? t.header.saved : t.header.saveError}</em></span>
               <button className="btn small ghost" onClick={() => setGuide(true)}>{t.header.guide}</button>
-              <button className="btn small primary" onClick={exportPdf}>{t.header.export}</button>
+              <button className="btn small primary" disabled={busy} onClick={exportPdf}>{busy ? '…' : t.header.export}</button>
             </header>
 
             <nav className="stepper" aria-label="Passos">

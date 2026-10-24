@@ -208,7 +208,7 @@ fieldset:disabled { opacity: .5; }
 .hero .btn.primary { background: #fff; color: var(--indigo); box-shadow: 0 8px 20px -8px rgba(0,0,0,.4); }
 .preview-col, .editor { min-width: 0; }
 .preview-col, .editor { grid-template-columns: minmax(0, 1fr); }
-.logo { display: block; border-radius: 10px; background: #0f1630 url('./novu-logo.png') center / auto 300% no-repeat; flex: none; }
+.logo { display: block; border-radius: 10px; background: #0f1630 url('./assets/novu-logo.png') center / auto 300% no-repeat; flex: none; }
 .badge { margin-left: 6px; font-size: .65rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; background: #dbeafe; color: #1d4ed8; border-radius: 99px; padding: 2px 7px; vertical-align: middle; }
 .sw.custom { position: relative; display: grid; place-items: center; background: conic-gradient(#ef4444, #eab308, #22c55e, #06b6d4, #6366f1, #d946ef, #ef4444); color: #fff; font-weight: 800; cursor: pointer; overflow: hidden; }
 .sw.custom:not(.on) span { text-shadow: 0 0 3px rgba(0,0,0,.6); }

@@ -39,7 +39,7 @@ The interface is in **European Portuguese** (informal "tu") and follows Portugue
 | 👀 **Live A4 preview** | See the CV take shape while you write, at true A4 proportions. |
 | 🎨 **8 templates** | Moderno, Retrato, Centrado, Lateral, Audaz, Minimalista, Clássico and an Europass-style layout. Two are designed around a photo. |
 | 🌈 **Your colours** | 12 presets plus a custom colour picker. Headers and accents follow your choice. |
-| 📄 **Print-quality PDF** | One-click export to A4 with real, selectable text, so it works with applicant tracking systems (ATS). |
+| 📄 **One-click PDF download** | Downloads an A4 PDF straight away, on desktop and phone. It includes a hidden text layer, so it can be searched, selected and read by applicant tracking systems (ATS). A print option gives a fully vector PDF. |
 | 📥 **Import an existing CV** | Upload a PDF, Word (.docx) or text file, review what was found, pick a new template and edit. |
 | 📸 **Optional photo** | Cropped and resized in the browser. Placeholders show only on screen, never in the PDF. |
 | 💾 **Drafts that stay yours** | Several drafts, autosaved in your browser. Back up or move them with a `.json` file. |
@@ -152,6 +152,7 @@ src/
 │  ├─ ImportModal.tsx    drag-and-drop CV import
 │  └─ Home.tsx           landing screen and draft list
 ├─ cv.css                template styles, sized in mm/pt so screen and PDF match
+├─ exportPdf.ts          direct PDF download (render + invisible text layer)
 ├─ importCV.ts           file reading and CV parsing (headings, dates, entries)
 ├─ checks.ts             the "CV health" checks
 └─ store.ts              multi-draft storage with autosave
@@ -159,8 +160,8 @@ src/
 
 A few design decisions worth knowing:
 
-- **PDF export uses the browser's print engine** with an A4 `@page`. The text stays real and selectable (good for ATS) and there is no PDF library to ship.
-- **The preview and the PDF come from the same component.** The preview is scaled with a transform and a second, unscaled copy is mounted only for printing.
+- **PDF download is generated in the browser** (`html2canvas` + `jsPDF`, loaded on demand): the page is rendered at about 300 dpi and an invisible text layer is added on top for search and ATS. A second option uses the browser's print engine with an A4 `@page` for a fully vector PDF.
+- **The preview and the PDF come from the same component.** The preview is scaled with a transform and a second, unscaled copy is used for the PDF. Accent tints are pre-computed (`accentVars.ts`) instead of using CSS `color-mix()`, which `html2canvas` cannot parse.
 - **CV import is rule-based, not AI.** It detects Portuguese and English section headings (including letter-spaced ones like "P E R F I L"), splits two-column layouts, parses dates and groups entries. It was tested by round-tripping PDFs exported from the templates, but real-world CVs vary, so users are asked to review each step.
 - **Adding a language** means copying `src/i18n/pt.ts` to `en.ts`, translating the values and registering it in `src/i18n/index.ts`.
 

@@ -239,7 +239,7 @@ function readable(hex: string): string {
   return `#${h(r)}${h(g)}${h(b)}`
 }
 
-export function FinishStep({ cv, update, checks, fits, onExport, onBackup }: StepProps & { checks: Check[]; fits: boolean; onExport: () => void; onBackup: () => void }) {
+export function FinishStep({ cv, update, checks, fits, onExport, onPrint, busy, onBackup }: StepProps & { checks: Check[]; fits: boolean; onExport: () => void; onPrint: () => void; busy: boolean; onBackup: () => void }) {
   const t = useT()
   const f = t.finish
   const done = checks.filter(c => c.ok).length
@@ -293,7 +293,8 @@ export function FinishStep({ cv, update, checks, fits, onExport, onBackup }: Ste
         <strong>{f.exportTitle}</strong>
         <p>{f.exportHow}</p>
         <div className="row">
-          <button type="button" className="btn primary big" onClick={onExport}>⬇ {f.exportBtn}</button>
+          <button type="button" className="btn primary big" disabled={busy} onClick={onExport}>{busy ? f.generating : `⬇ ${f.exportBtn}`}</button>
+          <button type="button" className="btn ghost" onClick={onPrint}>{f.printAlt}</button>
           <button type="button" className="btn ghost" onClick={onBackup}>{t.actions.download}</button>
         </div>
         <p className="field-hint">{f.backup}</p>
