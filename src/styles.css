@@ -221,3 +221,10 @@ fieldset:disabled { opacity: .5; }
 .dz-icon { font-size: 2rem; }
 .import-note { background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 14px; padding: 14px 16px; color: #065f46; }
 .import-note p { margin: 4px 0 10px; font-size: .92rem; }
+/* keep grid children from forcing their content width (inputs have an intrinsic size) */
+.stack, .form-card { grid-template-columns: minmax(0, 1fr); }
+.grid2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.my-row { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
+.field input, .field select, .field textarea { min-width: 0; }
+.lang-row { grid-template-columns: minmax(0, 1fr) 160px 36px; }
+@media (max-width: 560px) { .grid2 { grid-template-columns: minmax(0, 1fr); } .lang-row { grid-template-columns: minmax(0, 1fr) 120px 36px; } }
